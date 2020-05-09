@@ -1,2 +1,1 @@
-# tjcli
-Todo and Journaling cli utility
+## Journaling,Todo and Tasks using cli	

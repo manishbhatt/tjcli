@@ -1,0 +1,3 @@
+- [] Figure out how to open vim from python
+- [] Based on today , tomorrow and yesterday lablels locate the file location in yyyy/mm/dd.md format
+- [] Support for templates like tasks, todos, notes etc.. 
