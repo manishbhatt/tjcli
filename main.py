@@ -1,11 +1,13 @@
-
 from datetime import date, timedelta, datetime
 import os, argparse
+
 
 the_cal = {"t": 0, "tm": 1, "y": -1}
 
 
 def read_args():  # Read commandline arguments and finalize the date
+    # TODO: Create some meaningful args and messages, for now continue with hardcoded
+    # values and later revisit on how to decide args structure
     aparser = argparse.ArgumentParser(description="Journaling CLI")
     aparser.add_argument(
         "-d",
