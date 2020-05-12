@@ -3,36 +3,43 @@
 from datetime import date,timedelta,datetime
 import os,argparse
 
-the_cal = {'TODAY': 0 , 'TOMORROW' : 1, 'YESTERDAY' : -1 } 
+the_cal = {'t': 0 , 'tm' : 1, 'y' : -1 } 
 
 def main():
     read_args()
-    #md_file=get_note_file("Yesterday")
-    #open_note(md_file)
 
 def read_args():
     # TODO: Create some meaningful args and messages, for now continue with hardcoded 
 	# values and later revisit on how to decide args structure
     aparser=argparse.ArgumentParser(description="Journaling CLI")
-    aparser.add_argument('-t','--today',action='store_true',help='Open journal entry for today')
-    aparser.add_argument('-y','--yesterday',action='store_true',help='Open journal entry for yesterday')
-    aparser.add_argument('-tm','--tomorrow',action='store_true',help='Open journal entry form tomorrow')
-    args=aparser.parse_args()
+    aparser.add_argument('-d',type=valid_date,help="Date for the entry, t=today,y=yesterday,tm=tomorrow, or date in YYY/MM/DD format")
+    date_string=aparser.parse_args().d
+    open_note(get_note_file(date_string))
+     
 
-    print(args)
     
 def open_note(note_file):
     print("opening file")
     os.system('vi' + ' ' + note_file)
 
-def get_note_file(day_label):
-    time_delta=the_cal[day_label.upper()]
-    the_file=datetime.strftime(datetime.now() + timedelta(days=time_delta),'%Y/%m/%d')+'.md'
-    the_path=datetime.strftime(datetime.now() + timedelta(days=time_delta),'%Y/%m')
+def get_note_file(date_label):
+    the_file=date_label+'.md'
+    the_path=date_label[:7]
     os.makedirs(the_path,exist_ok=True)
     return the_file 
 
+def valid_date(s):
+    if s in ['t','y','tm']:
+        time_delta=the_cal[s]
+        return datetime.strftime(datetime.now() + timedelta(days=time_delta),'%Y/%m/%d')
 
+    try:
+        print(datetime.strptime(s, "%Y/%m/%d"))
+        # Check if it's valid date or not by trying to convert into actual date
+        return datetime.strftime(datetime.strptime(s, "%Y/%m/%d"),"%Y/%m/%d")
+    except ValueError:
+        msg = "Not a valid date: '{0}'.".format(s)
+        raise argparse.ArgumentTypeError(msg)
 
 if __name__ == "__main__":
        main()
