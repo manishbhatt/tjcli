@@ -23,14 +23,14 @@ def open_note(note_file):  # Open md file using vim
     os.system("vi" + " " + note_file)
 
 
-def md_init(date_label):  # Initilize md file with template and original content
+def md_init(date_label):  # Initialize md file with template and original content
     the_file = date_label + ".md"
     the_path = date_label[:7]
     os.makedirs(the_path, exist_ok=True)
     return the_file
 
 
-def valid_date(s):  # Helper functin used by argparser to do date validation
+def valid_date(s):  # Helper function used by argparser to do date validation
     if s in ["t", "y", "tm"]:
         time_delta = the_cal[s]
         return datetime.strftime(
