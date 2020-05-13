@@ -1,1 +1,3 @@
-## Journaling,Todo and Tasks using cli	
+# journaling-cli
+
+## Journal, To-Do, and Notes from the command line
