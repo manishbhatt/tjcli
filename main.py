@@ -20,10 +20,10 @@ the_md_file = {
 
 def main():
     # Main workflow
-    date = read_args()[0]  # Get date
-    the_file_name=md_init(date)  # Get filename
+    file_date = read_args()  # Get date
+    the_file_name = md_init(file_date)  # Get filename
     # Read the file, this function will be useful when we want to inject and update todos , notes etc..
-    md_read(the_file_name)  
+    md_read(the_file_name)
     md_open(the_file_name)  # Open the file
 
 
@@ -33,22 +33,11 @@ def read_args():  # Read commandline arguments and finalize the date
     aparser = argparse.ArgumentParser(description="Journaling CLI")
     aparser.add_argument(
         "-d",
-        "--date",
         type=valid_date,
         help="Date for the entry, t = today, y = yesterday, tm = tomorrow, or date in YYY/MM/DD format",
     )
-    aparser.add_argument(
-        "-td", "--todo", type=str,
-    )
-    aparser.add_argument(
-        "-n", "--note", type=str,
-    )
-    arg_datestr = aparser.parse_args().date
-    arg_tdstr = aparser.parse_args().todo
-    arg_nstr = aparser.parse_args().note
-    arg_tdstr = ["To-Do", arg_tdstr]
-    arg_nstr = ["Notes", arg_nstr]
-    return arg_datestr, arg_tdstr
+    arg_datestr = aparser.parse_args().d
+    return arg_datestr
 
 
 def valid_date(s):  # Helper function used by argparser to do date validation
@@ -58,13 +47,12 @@ def valid_date(s):  # Helper function used by argparser to do date validation
             datetime.now() + timedelta(days=time_delta), "%Y/%m/%d"
         )
 
-        try:
-            datetime.strptime(s, "%Y/%m/%d")
-            # Check if it's valid date or not by trying to convert into actual date
-            return datetime.strftime(datetime.strptime(s, "%Y/%m/%d"), "%Y/%m/%d")
-        except ValueError:
-            msg = "Not a valid date: '{0}'.".format(s)
-        raise argparse.ArgumentTypeError(msg)
+    try:
+        # Check if it's valid date or not by trying to convert into actual date
+        return datetime.strftime(datetime.strptime(s, "%Y/%m/%d"), "%Y/%m/%d")
+    except ValueError:
+        msg = "Not a valid date: '{0}'.".format(s)
+    raise argparse.ArgumentTypeError(msg)
 
 
 def md_init(init_date):
@@ -83,6 +71,7 @@ def md_init(init_date):
         the_md_file["Title"] = md_datehf + "\n" * 2
         md_write(md_file_name)
     return md_file_name
+
 
 def md_read(md_file_name):
     f = open(md_file_name, "r")
