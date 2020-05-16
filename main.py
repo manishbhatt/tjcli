@@ -1,7 +1,8 @@
 from datetime import date, timedelta, datetime
 from pprint import pprint
-import os, argparse, subprocess
+import os, argparse, subprocess,configparser
 from os import path
+from pathlib import Path
 
 
 the_cal = {"t": 0, "tm": 1, "y": -1}
@@ -16,6 +17,9 @@ the_md_file = {
     notes_tag: [notes_tag + "\n\n"],
     journal_tag: [journal_tag + "\n\n"],
 }
+config = configparser.ConfigParser()
+config.read(str(Path.home())+"/ytodorc")
+root_folder=config['config']['root_folder']
 
 
 def main():
@@ -26,7 +30,7 @@ def main():
     md_read(the_file_name)
     md_open(the_file_name)  # Open the file
 
-
+    
 def read_args():  # Read commandline arguments and finalize the date
     # TODO: Create some meaningful args and messages, for now continue with hardcoded
     # values and later revisit on how to decide args structure
@@ -63,9 +67,8 @@ def md_init(init_date):
         .lstrip("0")  # strips zero-padding from the day
         .replace(" 0", " ")
     )
-    init_rootdir = "journal/"
-    init_datedir = init_rootdir + init_date[:7]
-    md_file_name = init_rootdir + init_date + ".md"
+    init_datedir = root_folder + init_date[:7]
+    md_file_name = root_folder + init_date + ".md"
     os.makedirs(init_datedir, exist_ok=True)
     if not path.exists(md_file_name):
         the_md_file["Title"] = md_datehf + "\n" * 2
