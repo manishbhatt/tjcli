@@ -11,7 +11,7 @@ todo_tag = "## To-do"
 notes_tag = "## Notes"
 journal_tag = "## Journal"
 check_box = "- [ ] "
-# TODO: Bring md_filename under following json
+nl="\n""
 the_md_file = {
     "file_name": "",
     "header_order": ["Title", "t", "n", "j"],
@@ -29,14 +29,11 @@ root_folder = config["config"]["root_folder"]
 def main():
     # Main workflow
     read_args()  # Read all args and prepare all_args dict
-    md_init()  # Based on all the args, process the file
-    print(all_args)
-    print(the_md_file)
-
-
-#    md_write(the_file_name)
-#    md_open(the_file_name)  # Open the file
-
+    md_init()  # Based on all the args, process the file\
+    pprint(the_md_file)
+    md_write1()
+    #md_open()  # Open the file
+#
 
 def read_args():  # Read commandline arguments and finalize the date
     # TODO: Create some meaningful args and messages, for now continue with hardcoded
@@ -64,10 +61,10 @@ def md_init():
     the_md_file["file_name"] = md_file_name
     os.makedirs(init_datedir, exist_ok=True)
     if not path.exists(md_file_name):
-        the_md_file["Title"] = "Date:" + init_date + "\n" * 2
-        the_md_file["t"].extend([todo_tag + "\n\n", check_box + "\n\n"])
-        the_md_file["n"].extend([notes_tag + "\n\n"])
-        the_md_file["j"].extend([journal_tag + "\n\n"])
+        the_md_file["Title"] = "Date:" + init_date 
+        the_md_file["t"].extend([todo_tag])
+        the_md_file["n"].extend([notes_tag])
+        the_md_file["j"].extend([journal_tag])
     else:
         f = open(md_file_name, "r")
         ar = []
@@ -75,12 +72,15 @@ def md_init():
         the_md_file["Title"] = file_content[0]
         for ln in file_content[1:]:
             if ln.strip() == todo_tag:
+                the_md_file["t"].extend([todo_tag])
                 ar = the_md_file["t"]
                 continue
             if ln.strip() == notes_tag:
+                the_md_file["n"].extend([notes_tag])
                 ar = the_md_file["n"]
                 continue
             if ln.strip() == journal_tag:
+                the_md_file["j"].extend([journal_tag])
                 ar = the_md_file["j"]
                 continue
             ar.append(ln)
@@ -90,7 +90,18 @@ def md_init():
             the_md_file[v].append(all_args[v])
 
 
-def md_write(md_file_name):
+def md_write1():
+    md_file_name=the_md_file["file_name"] 
+    f = open(md_file_name, "w+")
+    f.writelines(the_md_file["t"])
+    f.writelines(the_md_file["n"])
+    f.writelines(the_md_file["j"])
+
+
+
+
+def md_write():
+    md_file_name=the_md_file["file_name"] 
     f = open(md_file_name, "w+")
     for file_header in the_md_file["header_order"]:
         for header_contents in the_md_file[file_header]:
@@ -100,7 +111,8 @@ def md_write(md_file_name):
     f.close()
 
 
-def md_open(md_file_name):  # Open md file using vim
+def md_open():  # Open md file using vim
+    md_file_name=the_md_file["file_name"] 
     print("opening file")
     os.system("vi " + md_file_name)
 
